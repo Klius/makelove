@@ -48,7 +48,7 @@ def	main(argv):
 	global verbose
 	parser	= argparse.ArgumentParser(description='Generate	love file')
 	parser.add_argument("dir",help="Directory containing all love files")
-	parser.add_argument("-v","--verbose",help="Displays info about the process")
+	parser.add_argument("-v","--verbose",action='store_true',help="Displays info about the process")
 	args =	parser.parse_args()
 	if	bool(args.dir):
 		verbose = bool(args.verbose)
@@ -59,3 +59,4 @@ def	main(argv):
 	
 if __name__	== "__main__":
 	main(sys.argv[1:])
+
