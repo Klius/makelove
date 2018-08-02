@@ -5,7 +5,7 @@ import sys
 import zipfile
 import os
 verbose = False
-def	zip_folder(folder_path):
+def	zip_folder(folder_path,excluded_folders):
 	"""Zip	the	contents of	an entire folder (with that	folder included
 	in	the	archive). Empty	subfolders will	be included	in the archive
 	as	well.
@@ -19,11 +19,12 @@ def	zip_folder(folder_path):
 		for root,	folders, files in contents:
 			# Include all subfolders, including empty ones.
 			for folder_name in folders:
-				absolute_path =	os.path.join(root, folder_name)
-				relative_path =	absolute_path.replace(parent_folder,'')
-				if verbose:
-					print "Adding '%s' to archive."	% absolute_path
-				zip_file.write(absolute_path, relative_path)
+				if isFolderExcluded(folder_name,excluded_folders) == False:
+					absolute_path =	os.path.join(root, folder_name)
+					relative_path =	absolute_path.replace(parent_folder,'')
+					if verbose:
+						print "Adding '%s' to archive."	% absolute_path
+					zip_file.write(absolute_path, relative_path)
 			for file_name in	files:
 				absolute_path =	os.path.join(root, file_name)
 				relative_path =	absolute_path.replace(parent_folder,'')
@@ -43,16 +44,28 @@ def	zip_folder(folder_path):
 		sys.exit(1)
 	finally:
 		zip_file.close()
+		
+"""Check for the root not only the folder"""
+def isFolderExcluded(folder,folder_list):
+	isExcluded = False
+	for name in folder_list:
+		print (folder)
+		if folder == name:
+			print(folder)
+			isExcluded = True
+		
+	return isExcluded
 
 def	main(argv):
 	global verbose
 	parser	= argparse.ArgumentParser(description='Generate	love file')
 	parser.add_argument("dir",help="Directory containing all love files")
+	parser.add_argument("-e","--excludedirs",nargs='+',help="Excluded directories")
 	parser.add_argument("-v","--verbose",action='store_true',help="Displays info about the process")
 	args =	parser.parse_args()
 	if	bool(args.dir):
 		verbose = bool(args.verbose)
-		zip_folder(args.dir)
+		zip_folder(args.dir,args.excludedirs)
 	else:
 		parser.print_help()
 		sys.exit(2)
